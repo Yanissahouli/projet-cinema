@@ -52,4 +52,10 @@ public class Cinema {
         this.idFranchise = idFranchise;
     }
 
+
+    @Override
+    public String toString() {
+        return denomination;
+    }
+
 }

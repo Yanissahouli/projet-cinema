@@ -3,6 +3,7 @@ package cinema.controllers;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -166,9 +169,19 @@ public class ListeFranchiseController extends MenuController implements Initiali
             {
                 btn.setOnAction(event -> {
                     Franchise franchise = getTableView().getItems().get(getIndex());
-                    tvFranchises.getItems().remove(franchise);
-                    FranchiseDAO franchiseDAO = new FranchiseDAO();
-                    franchiseDAO.delete(franchise);
+
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Confirmation de suppression");
+                    alert.setHeaderText("Supprimer la franchise");
+                    alert.setContentText("Voulez-vous vraiment supprimer la franchise \""
+                            + franchise.getNomFranchise() + "\" ?");
+
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.isPresent() && result.get() == ButtonType.OK) {
+                        tvFranchises.getItems().remove(franchise);
+                        FranchiseDAO franchiseDAO = new FranchiseDAO();
+                        franchiseDAO.delete(franchise);
+                    }
                 });
                 // btn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
             }

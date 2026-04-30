@@ -37,10 +37,16 @@ public class ConnexionController implements Initializable {
         String truc = tfLogin.getText();
         String chose = tfMDP.getText();
 
+
+
         UtilisateurDAO userDAO = new UtilisateurDAO();
         // TODO
         Utilisateur user = userDAO.authenticate(truc, chose);
-        showAccueil(user.getLogin());
+
+
+
+
+        showAccueil(user.getNom() + " " + user.getPrenom());
     }
 
     private void showAccueil(String name) {

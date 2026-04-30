@@ -15,7 +15,8 @@ public class FranchiseDAO extends DAO<Franchise> {
     public boolean create(Franchise obj) {
         boolean controle = false;
         try {
-            String a = "INSERT INTO franchise(nom_franchise, siege_social, id_gerant) values (?,?,?,?);";
+            // CORRECTION : 3 colonnes donc 3 ? au lieu de 4
+            String a = "INSERT INTO franchise(nom_franchise, siege_social, id_gerant) values (?,?,?);";
             PreparedStatement statement = this.connect.prepareStatement(a);
             statement.setString(1, obj.getNomFranchise());
             statement.setString(2, obj.getSiegeSocial());
@@ -31,7 +32,6 @@ public class FranchiseDAO extends DAO<Franchise> {
         }
         return controle;
     }
-
     public Integer getNbFranchiseByIdGerant(int idGerant) {
         int result = 0;
         try {
