@@ -3,6 +3,7 @@ package cinema.controllers;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import java.util.Optional;
 
 public class ListeCinemaController extends MenuController implements Initializable {
 
@@ -65,10 +65,10 @@ public class ListeCinemaController extends MenuController implements Initializab
 
         btnModif();
         btnSupp();
+        btnVoirPlus();
     }
 
     private ObservableList<Cinema> getCinema() {
-
         CinemaDAO cinemaDAO = new CinemaDAO();
         List<Cinema> mesCinemas = cinemaDAO.findAll();
         ObservableList<Cinema> list = FXCollections.observableArrayList(mesCinemas);
@@ -88,19 +88,53 @@ public class ListeCinemaController extends MenuController implements Initializab
             accueilController.setName(nameUti);
             accueilController.setBienvenue();
 
-            // Créer une nouvelle fenêtre (Stage)
             Stage stage = new Stage();
             stage.setTitle("Liste cinémas");
             stage.setScene(new Scene(root));
-
-            // Configurer la fenêtre en tant que modal
             stage.initModality(Modality.APPLICATION_MODAL);
-
-            // Afficher la fenêtre et attendre qu'elle se ferme
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void btnVoirPlus() {
+        tcVp.setCellFactory(column -> new TableCell<Cinema, Void>() {
+            private Button btn = new Button("Voir plus");
+            {
+                btn.setOnAction(event -> {
+                    Cinema cinema = getTableView().getItems().get(getIndex());
+                    Stage stageP = (Stage) bRetour.getScene().getWindow();
+                    stageP.close();
+
+                    try {
+                        FXMLLoader fxmlLoader = new FXMLLoader(
+                                getClass().getResource("/cinema/views/page_liste_salle.fxml"));
+                        Parent root = fxmlLoader.load();
+
+                        ListeSalleController listeSalleController = fxmlLoader.getController();
+                        listeSalleController.setName(nameUti);
+                        // Passage du cinéma pour filtrer les salles
+                        listeSalleController.setCinema(cinema);
+
+                        Stage stage = new Stage();
+                        stage.setTitle("Salles de " + cinema.getDenomination());
+                        stage.setScene(new Scene(root));
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        stage.show();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : btn);
+            }
+        });
     }
 
     private void btnModif() {
@@ -117,18 +151,20 @@ public class ListeCinemaController extends MenuController implements Initializab
                                 getClass().getResource("/cinema/views/page_modif_cinema.fxml"));
                         Parent root = fxmlLoader.load();
 
+                        ModifierCinemaController modifierCinemaController = fxmlLoader.getController();
+                        modifierCinemaController.setAttributes(cinema);
+                        modifierCinemaController.setName(nameUti);
+
                         Stage stage = new Stage();
-                        stage.setTitle("Modification cinema");
+                        stage.setTitle("Modification cinéma");
                         stage.setScene(new Scene(root));
-
                         stage.initModality(Modality.APPLICATION_MODAL);
-
                         stage.show();
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-                btn.setDisable(true);
             }
 
             @Override

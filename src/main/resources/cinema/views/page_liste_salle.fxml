@@ -19,14 +19,14 @@
       minHeight="-Infinity"
       minWidth="-Infinity"
       prefHeight="478.0"
-      prefWidth="804.0"
+      prefWidth="873.0"
       xmlns="http://javafx.com/javafx/22"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="cinema.controllers.ListeCinemaController">
+      fx:controller="cinema.controllers.ListeSalleController">
     <children>
-        <VBox layoutX="-1.0" prefHeight="48.0" prefWidth="804.0">
+        <VBox layoutX="-1.0" prefHeight="48.0" prefWidth="873.0">
             <children>
-                <MenuBar layoutY="1.0" prefHeight="26.0" prefWidth="711.0">
+                <MenuBar layoutY="1.0" prefHeight="26.0" prefWidth="866.0">
                     <menus>
                         <Menu fx:id="gestionFranchise" mnemonicParsing="false" text="Gestion franchises">
                             <graphic>
@@ -85,20 +85,21 @@
             </children>
         </VBox>
 
-        <TableView fx:id="tvCinema" layoutY="50.0" prefHeight="292.0" prefWidth="804.0">
+        <TableView fx:id="tvSalles" layoutY="50.0" prefHeight="292.0" prefWidth="873.0">
             <columns>
-                <TableColumn fx:id="tcDenomination" prefWidth="200.0" text="Dénomination" />
-                <TableColumn fx:id="tcFranchise" prefWidth="150.0" text="Franchise" />
-                <TableColumn fx:id="tcVp" prefWidth="100.0" text="Voir plus" />
-                <TableColumn fx:id="tcModif" prefWidth="110.0" text="Modifier" />
-                <TableColumn fx:id="tcSupp" prefWidth="110.0" text="Supprimer" />
+                <TableColumn fx:id="tcNumero" prefWidth="100.0" text="Numéro" />
+                <TableColumn fx:id="tcDescription" prefWidth="250.0" text="Description" />
+                <TableColumn fx:id="tcNbPlaces" prefWidth="100.0" text="Nb Places" />
+                <TableColumn fx:id="tcCinema" prefWidth="150.0" text="Cinéma" />
+                <TableColumn fx:id="tcModifier" prefWidth="110.0" text="Modifier" />
+                <TableColumn fx:id="tcSupprimer" prefWidth="110.0" text="Supprimer" />
             </columns>
         </TableView>
 
         <HBox alignment="CENTER"
               layoutY="355.0"
               prefHeight="115.0"
-              prefWidth="804.0"
+              prefWidth="873.0"
               spacing="20.0">
             <children>
                 <!-- ajout du logo -->
@@ -121,9 +122,8 @@
             </children>
         </HBox>
 
-        <Pane layoutX="0.0" layoutY="439.0" prefHeight="39.0" prefWidth="804.0" />
-        <QuadCurve controlX="67.66667938232422"
-                   controlY="-217.33334350585938"
+        <QuadCurve controlX="18.33334732055664"
+                   controlY="-216.0"
                    endX="318.33331298828125"
                    endY="-15.000030517578125"
                    fill="#3A3AB6"
@@ -136,11 +136,11 @@
                    strokeWidth="0.0" />
         <QuadCurve controlX="190.6666259765625"
                    controlY="-222.33334350585938"
-                   endX="45.00006103515625"
-                   endY="-15.0"
+                   endX="85.0"
+                   endY="-16.000030517578125"
                    fill="#3A3AB6"
-                   layoutX="759.0"
-                   layoutY="493.0"
+                   layoutX="788.0"
+                   layoutY="494.0"
                    startX="-220.66668701171875"
                    startY="-15.0"
                    stroke="BLACK"

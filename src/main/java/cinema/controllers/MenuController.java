@@ -34,6 +34,8 @@ public class MenuController {
 
             AccueilController accueilController = fxmlLoader.getController();
             accueilController.setName(nameUti);
+            // CORRECTION : appel de setBienvenue() pour afficher le nom/prénom
+            accueilController.setBienvenue();
 
             Stage stage = new Stage();
             stage.setTitle("Accueil");
@@ -124,6 +126,10 @@ public class MenuController {
                     getClass().getResource("/cinema/views/page_ajout_cinema.fxml"));
             Parent root = fxmlLoader.load();
 
+            // CORRECTION : passage du nameUti au controller
+            AjouterCinemaController ajouterCinemaController = fxmlLoader.getController();
+            ajouterCinemaController.setName(nameUti);
+
             Stage stage = new Stage();
             stage.setTitle("Ajouter un cinéma");
             stage.setScene(new Scene(root));
@@ -144,6 +150,10 @@ public class MenuController {
                     getClass().getResource("/cinema/views/page_liste_salle.fxml"));
             Parent root = fxmlLoader.load();
 
+            // CORRECTION : passage du nameUti au controller
+            ListeSalleController listeSalleController = fxmlLoader.getController();
+            listeSalleController.setName(nameUti);
+
             Stage stage = new Stage();
             stage.setTitle("Liste des salles");
             stage.setScene(new Scene(root));
@@ -163,6 +173,10 @@ public class MenuController {
             FXMLLoader fxmlLoader = new FXMLLoader(
                     getClass().getResource("/cinema/views/page_ajout_salle.fxml"));
             Parent root = fxmlLoader.load();
+
+            // CORRECTION : passage du nameUti au controller
+            AjouterSalleController ajouterSalleController = fxmlLoader.getController();
+            ajouterSalleController.setName(nameUti);
 
             Stage stage = new Stage();
             stage.setTitle("Ajouter une salle");

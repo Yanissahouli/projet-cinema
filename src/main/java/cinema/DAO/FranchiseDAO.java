@@ -8,13 +8,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cinema.BO.Franchise;
+import cinema.BO.Utilisateur;
+import cinema.Session;
 
 public class FranchiseDAO extends DAO<Franchise> {
+
+    /**
+     * Envoie le nom de l'utilisateur connecté à PostgreSQL
+     * pour que les triggers puissent le récupérer via current_setting('myapp.utilisateur').
+     */
+    private void setUtilisateurSession() {
+        try {
+            Utilisateur u = Session.getUtilisateur();
+            String nom = (u != null) ? u.getNom() + " " + u.getPrenom() : "inconnu";
+            Statement st = this.connect.createStatement();
+            st.execute("SET myapp.utilisateur = '" + nom + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public boolean create(Franchise obj) {
         boolean controle = false;
         try {
+            // Envoi du nom utilisateur pour le log
+            setUtilisateurSession();
+
             // CORRECTION : 3 colonnes donc 3 ? au lieu de 4
             String a = "INSERT INTO franchise(nom_franchise, siege_social, id_gerant) values (?,?,?);";
             PreparedStatement statement = this.connect.prepareStatement(a);
@@ -32,6 +52,7 @@ public class FranchiseDAO extends DAO<Franchise> {
         }
         return controle;
     }
+
     public Integer getNbFranchiseByIdGerant(int idGerant) {
         int result = 0;
         try {
@@ -52,6 +73,9 @@ public class FranchiseDAO extends DAO<Franchise> {
     public boolean delete(Franchise obj) {
         boolean controle = false;
         try {
+            // Envoi du nom utilisateur pour le log
+            setUtilisateurSession();
+
             String sql = "DELETE FROM franchise WHERE id_franchise = ?;";
             PreparedStatement statement = this.connect.prepareStatement(sql);
             statement.setInt(1, obj.getIdFranchise());
@@ -71,6 +95,9 @@ public class FranchiseDAO extends DAO<Franchise> {
     public boolean update(Franchise obj) {
         boolean controle = false;
         try {
+            // Envoi du nom utilisateur pour le log
+            setUtilisateurSession();
+
             String query = "UPDATE franchise SET nom_franchise = ?, siege_social = ?, id_gerant = ? WHERE id_franchise = ?";
             PreparedStatement statement = this.connect.prepareStatement(query);
             statement.setString(1, obj.getNomFranchise());

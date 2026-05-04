@@ -1,214 +1,192 @@
-CREATE TABLE log(
-    idlog SERIAL PRIMARY KEY,
-    tableName VARCHAR(50),
-    operation VARCHAR(50),
-    dateAction TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ancienContenu TEXT,
-    nouveauContenu TEXT
+-- Suppression de la table log si elle existe déjà
+DROP TABLE IF EXISTS log;
+
+-- Création de la table log avec colonne utilisateur
+CREATE TABLE log (
+                     idLog SERIAL PRIMARY KEY,
+                     tableName VARCHAR(50),
+                     operation VARCHAR(50),
+                     utilisateur VARCHAR(100),
+                     dateAction TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                     ancienContenu TEXT,
+                     nouveauContenu TEXT
 );
 
-CREATE
-OR REPLACE FUNCTION insert_log_function(
+-- Fonction générique d'insertion dans le log
+CREATE OR REPLACE FUNCTION insert_log_function(
     p_tableName VARCHAR,
     p_operation VARCHAR,
+    p_utilisateur VARCHAR,
     p_ancienContenu TEXT,
     p_nouveauContenu TEXT
-) RETURNS void LANGUAGE plpgsql AS $ $ BEGIN
-INSERT INTO
-    log(
-        tableName,
-        operation,
-        ancienContenu,
-        nouveauContenu
-    )
-VALUES
-    (
-        p_tableName,
-        p_operation,
-        p_ancienContenu,
-        p_nouveauContenu
+) RETURNS void LANGUAGE plpgsql AS $$
+BEGIN
+INSERT INTO log (tableName, operation, utilisateur, ancienContenu, nouveauContenu)
+VALUES (p_tableName, p_operation, p_utilisateur, p_ancienContenu, p_nouveauContenu);
+END;
+$$;
+
+-- =====================
+-- TRIGGERS FRANCHISE
+-- =====================
+
+-- INSERT
+CREATE OR REPLACE FUNCTION trigger_franchise_create() RETURNS TRIGGER AS $$
+DECLARE
+v_utilisateur VARCHAR;
+BEGIN
+    -- Récupération du nom de l'utilisateur connecté passé depuis Java
+BEGIN
+        v_utilisateur := current_setting('myapp.utilisateur');
+EXCEPTION WHEN OTHERS THEN
+        v_utilisateur := 'inconnu';
+END;
+
+    PERFORM insert_log_function(
+        'franchise',
+        'INSERT',
+        v_utilisateur,
+        '',
+        'ID: ' || NEW.id_franchise || ', Nom: ' || NEW.nom_franchise || ', Siege: ' || COALESCE(NEW.siege_social, '')
     );
-
-END;
-
-$ $;
-
--- SECTION --
--- INSERT
-CREATE
-OR REPLACE FUNCTION trigger_section_create() RETURNS TRIGGER AS $ $ BEGIN PERFORM insert_log_function(
-    'section',
-    'INSERT',
-    '',
-    'ID: ' || NEW.idSection || ', Libelle: ' || NEW.libelleSection
-);
-
 RETURN NEW;
-
 END;
+$$ LANGUAGE plpgsql;
 
-$ $ LANGUAGE plpgsql;
-
-CREATE TRIGGER section_create
-AFTER
-INSERT
-    ON Section FOR EACH ROW EXECUTE FUNCTION trigger_section_create();
+CREATE TRIGGER franchise_create
+    AFTER INSERT ON franchise
+    FOR EACH ROW EXECUTE FUNCTION trigger_franchise_create();
 
 -- UPDATE
-CREATE
-OR REPLACE FUNCTION trigger_section_update() RETURNS TRIGGER AS $ $ BEGIN PERFORM insert_log_function(
-    'section',
-    'UPDATE',
-    'ID: ' || OLD.idSection || ', Libelle: ' || OLD.libelleSection,
-    'ID: ' || NEW.idSection || ', Libelle: ' || NEW.libelleSection
-);
-
-RETURN NEW;
-
+CREATE OR REPLACE FUNCTION trigger_franchise_update() RETURNS TRIGGER AS $$
+DECLARE
+v_utilisateur VARCHAR;
+BEGIN
+BEGIN
+        v_utilisateur := current_setting('myapp.utilisateur');
+EXCEPTION WHEN OTHERS THEN
+        v_utilisateur := 'inconnu';
 END;
 
-$ $ LANGUAGE plpgsql;
+    PERFORM insert_log_function(
+        'franchise',
+        'UPDATE',
+        v_utilisateur,
+        'ID: ' || OLD.id_franchise || ', Nom: ' || OLD.nom_franchise || ', Siege: ' || COALESCE(OLD.siege_social, ''),
+        'ID: ' || NEW.id_franchise || ', Nom: ' || NEW.nom_franchise || ', Siege: ' || COALESCE(NEW.siege_social, '')
+    );
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER section_update
-AFTER
-UPDATE
-    ON Section FOR EACH ROW EXECUTE FUNCTION trigger_section_update();
+CREATE TRIGGER franchise_update
+    AFTER UPDATE ON franchise
+    FOR EACH ROW EXECUTE FUNCTION trigger_franchise_update();
 
 -- DELETE
-CREATE
-OR REPLACE FUNCTION trigger_section_delete() RETURNS TRIGGER AS $ $ BEGIN PERFORM insert_log_function(
-    'section',
-    'DELETE',
-    'ID: ' || OLD.idSection || ', Libelle: ' || OLD.libelleSection,
-    ''
-);
+CREATE OR REPLACE FUNCTION trigger_franchise_delete() RETURNS TRIGGER AS $$
+DECLARE
+v_utilisateur VARCHAR;
+BEGIN
+BEGIN
+        v_utilisateur := current_setting('myapp.utilisateur');
+EXCEPTION WHEN OTHERS THEN
+        v_utilisateur := 'inconnu';
+END;
 
+    PERFORM insert_log_function(
+        'franchise',
+        'DELETE',
+        v_utilisateur,
+        'ID: ' || OLD.id_franchise || ', Nom: ' || OLD.nom_franchise || ', Siege: ' || COALESCE(OLD.siege_social, ''),
+        ''
+    );
 RETURN OLD;
-
 END;
+$$ LANGUAGE plpgsql;
 
-$ $ LANGUAGE plpgsql;
+CREATE TRIGGER franchise_delete
+    AFTER DELETE ON franchise
+    FOR EACH ROW EXECUTE FUNCTION trigger_franchise_delete();
 
-CREATE TRIGGER section_delete
-AFTER
-    DELETE ON Section FOR EACH ROW EXECUTE FUNCTION trigger_section_delete();
+-- =====================
+-- TRIGGERS CINEMA
+-- =====================
 
--- COURS -- 
 -- INSERT
-CREATE
-OR REPLACE FUNCTION trigger_cours_create() RETURNS TRIGGER AS $ $ BEGIN PERFORM insert_log_function(
-    'cours',
-    'INSERT',
-    '',
-    'ID: ' || NEW.idCours || ', Libelle: ' || NEW.libelleCours || ', Description: ' || NEW.DescriptionCours || ', IDSection: ' || NEW.idSection
-);
-
-RETURN NEW;
-
+CREATE OR REPLACE FUNCTION trigger_cinema_create() RETURNS TRIGGER AS $$
+DECLARE
+v_utilisateur VARCHAR;
+BEGIN
+BEGIN
+        v_utilisateur := current_setting('myapp.utilisateur');
+EXCEPTION WHEN OTHERS THEN
+        v_utilisateur := 'inconnu';
 END;
 
-$ $ LANGUAGE plpgsql;
+    PERFORM insert_log_function(
+        'cinema',
+        'INSERT',
+        v_utilisateur,
+        '',
+        'ID: ' || NEW.id_cinema || ', Denomination: ' || NEW.denomination || ', Ville: ' || COALESCE(NEW.ville, '')
+    );
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER cours_create
-AFTER
-INSERT
-    ON cours FOR EACH ROW EXECUTE FUNCTION trigger_cours_create();
+CREATE TRIGGER cinema_create
+    AFTER INSERT ON cinema
+    FOR EACH ROW EXECUTE FUNCTION trigger_cinema_create();
 
 -- UPDATE
-CREATE
-OR REPLACE FUNCTION trigger_cours_update() RETURNS TRIGGER AS $ $ BEGIN PERFORM insert_log_function(
-    'cours',
-    'UPDATE',
-    'ID: ' || OLD.idCours || ', Libelle: ' || OLD.libelleCours || ', Description: ' || OLD.DescriptionCours || ', IDSection: ' || OLD.idSection,
-    'ID: ' || NEW.idCours || ', Libelle: ' || NEW.libelleCours || ', Description: ' || NEW.DescriptionCours || ', IDSection: ' || NEW.idSection
-);
-
-RETURN NEW;
-
+CREATE OR REPLACE FUNCTION trigger_cinema_update() RETURNS TRIGGER AS $$
+DECLARE
+v_utilisateur VARCHAR;
+BEGIN
+BEGIN
+        v_utilisateur := current_setting('myapp.utilisateur');
+EXCEPTION WHEN OTHERS THEN
+        v_utilisateur := 'inconnu';
 END;
 
-$ $ LANGUAGE plpgsql;
+    PERFORM insert_log_function(
+        'cinema',
+        'UPDATE',
+        v_utilisateur,
+        'ID: ' || OLD.id_cinema || ', Denomination: ' || OLD.denomination || ', Ville: ' || COALESCE(OLD.ville, ''),
+        'ID: ' || NEW.id_cinema || ', Denomination: ' || NEW.denomination || ', Ville: ' || COALESCE(NEW.ville, '')
+    );
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER cours_update
-AFTER
-UPDATE
-    ON cours FOR EACH ROW EXECUTE FUNCTION trigger_cours_update();
+CREATE TRIGGER cinema_update
+    AFTER UPDATE ON cinema
+    FOR EACH ROW EXECUTE FUNCTION trigger_cinema_update();
 
 -- DELETE
-CREATE
-OR REPLACE FUNCTION trigger_cours_delete() RETURNS TRIGGER AS $ $ BEGIN PERFORM insert_log_function(
-    'cours',
-    'DELETE',
-    'ID: ' || OLD.idCours || ', Libelle: ' || OLD.libelleCours || ', Description: ' || OLD.DescriptionCours || ', IDSection: ' || OLD.idSection,
-    ''
-);
+CREATE OR REPLACE FUNCTION trigger_cinema_delete() RETURNS TRIGGER AS $$
+DECLARE
+v_utilisateur VARCHAR;
+BEGIN
+BEGIN
+        v_utilisateur := current_setting('myapp.utilisateur');
+EXCEPTION WHEN OTHERS THEN
+        v_utilisateur := 'inconnu';
+END;
 
+    PERFORM insert_log_function(
+        'cinema',
+        'DELETE',
+        v_utilisateur,
+        'ID: ' || OLD.id_cinema || ', Denomination: ' || OLD.denomination || ', Ville: ' || COALESCE(OLD.ville, ''),
+        ''
+    );
 RETURN OLD;
-
 END;
+$$ LANGUAGE plpgsql;
 
-$ $ LANGUAGE plpgsql;
-
-CREATE TRIGGER cours_delete
-AFTER
-    DELETE ON cours FOR EACH ROW EXECUTE FUNCTION trigger_cours_delete();
-
--- ETUDIANT --
--- INSERT
-CREATE
-OR REPLACE FUNCTION trigger_etudiant_create() RETURNS TRIGGER AS $ $ BEGIN PERFORM insert_log_function(
-    'etudiant',
-    'INSERT',
-    '',
-    'ID: ' || NEW.idEtudiant || ', Nom: ' || NEW.nomEtudiant || ', Prenom: ' || NEW.prenomEtudiant || ', IDSection: ' || NEW.idSection
-);
-
-RETURN NEW;
-
-END;
-
-$ $ LANGUAGE plpgsql;
-
-CREATE TRIGGER etudiant_create
-AFTER
-INSERT
-    ON etudiant FOR EACH ROW EXECUTE FUNCTION trigger_etudiant_create();
-
--- UPDATE
-CREATE
-OR REPLACE FUNCTION trigger_etudiant_update() RETURNS TRIGGER AS $ $ BEGIN PERFORM insert_log_function(
-    'etudiant',
-    'UPDATE',
-    'ID: ' || OLD.idEtudiant || ', Nom: ' || OLD.nomEtudiant || ', Prenom: ' || OLD.prenomEtudiant || ', IDSection: ' || OLD.idSection,
-    'ID: ' || NEW.idEtudiant || ', Nom: ' || NEW.nomEtudiant || ', Prenom: ' || NEW.prenomEtudiant || ', IDSection: ' || NEW.idSection
-);
-
-RETURN NEW;
-
-END;
-
-$ $ LANGUAGE plpgsql;
-
-CREATE TRIGGER etudiant_update
-AFTER
-UPDATE
-    ON etudiant FOR EACH ROW EXECUTE FUNCTION trigger_etudiant_update();
-
--- DELETE
-CREATE
-OR REPLACE FUNCTION trigger_etudiant_delete() RETURNS TRIGGER AS $ $ BEGIN PERFORM insert_log_function(
-    'etudiant',
-    'DELETE',
-    'ID: ' || OLD.idEtudiant || ', Nom: ' || OLD.nomEtudiant || ', Prenom: ' || OLD.prenomEtudiant || ', IDSection: ' || OLD.idSection,
-    ''
-);
-
-RETURN OLD;
-
-END;
-
-$ $ LANGUAGE plpgsql;
-
-CREATE TRIGGER etudiant_delete
-AFTER
-    DELETE ON etudiant FOR EACH ROW EXECUTE FUNCTION trigger_etudiant_delete();
+CREATE TRIGGER cinema_delete
+    AFTER DELETE ON cinema
+    FOR EACH ROW EXECUTE FUNCTION trigger_cinema_delete();

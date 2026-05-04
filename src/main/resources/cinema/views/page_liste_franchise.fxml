@@ -51,7 +51,7 @@
                             </graphic>
                             <items>
                                 <MenuItem fx:id="bListeCinema" mnemonicParsing="false" onAction="#bListeCinemaClick" text="Liste des cinémas" />
-                                <MenuItem fx:id="bAjouterCinema" mnemonicParsing="false" onAction="#bAjouterCinemaClick" text="Ajouter un cinéma" disable="true" />
+                                <MenuItem fx:id="bAjouterCinema" mnemonicParsing="false" onAction="#bAjouterCinemaClick" text="Ajouter un cinéma" />
                             </items>
                         </Menu>
                         <Menu fx:id="gestionSalle" mnemonicParsing="false" text="Gestion salles">
@@ -63,8 +63,8 @@
                                 </ImageView>
                             </graphic>
                             <items>
-                                <MenuItem fx:id="bListeSalle" mnemonicParsing="false" onAction="#bListeSalleClick" text="Liste des salles" disable="true" />
-                                <MenuItem fx:id="bAjouterSalle" mnemonicParsing="false" onAction="#bAjouterSalleClick" text="Ajouter une salle" disable="true" />
+                                <MenuItem fx:id="bListeSalle" mnemonicParsing="false" onAction="#bListeSalleClick" text="Liste des salles" />
+                                <MenuItem fx:id="bAjouterSalle" mnemonicParsing="false" onAction="#bAjouterSalleClick" text="Ajouter une salle" />
                             </items>
                         </Menu>
                         <Menu fx:id="bAutres" mnemonicParsing="false" text="Autres">
@@ -101,6 +101,12 @@
               prefWidth="873.0"
               spacing="20.0">
             <children>
+                <!-- ajout du logo -->
+                <ImageView fitHeight="50.0" fitWidth="52.0">
+                    <image>
+                        <Image url="@../images/cinema_logo.png" />
+                    </image>
+                </ImageView>
                 <Button fx:id="bRetour"
                         mnemonicParsing="false"
                         onAction="#bRetourClick"

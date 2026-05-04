@@ -8,7 +8,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/22"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="cinema.controllers.AjouterFranchiseController"
+            fx:controller="cinema.controllers.ModifierCinemaController"
             stylesheets="@./css/main.css">
 
     <top>
@@ -76,7 +76,7 @@
                 <Insets top="30" right="40" bottom="30" left="40" />
             </padding>
 
-            <Label text="AJOUT D'UNE NOUVELLE FRANCHISE" styleClass="title-label" />
+            <Label text="MODIFICATION D'UN CINÉMA" styleClass="title-label" />
 
             <GridPane hgap="15" vgap="20" alignment="CENTER">
                 <columnConstraints>
@@ -84,20 +84,25 @@
                     <ColumnConstraints hgrow="ALWAYS" />
                 </columnConstraints>
 
-                <Label text="Nom :" styleClass="form-label"
+                <Label text="Dénomination :" styleClass="form-label"
                        GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                <TextField fx:id="tfNomFranchise"
+                <TextField fx:id="tfDenomination"
                            GridPane.rowIndex="0" GridPane.columnIndex="1" />
 
-                <Label text="Adresse du siège social :" styleClass="form-label"
+                <Label text="Adresse :" styleClass="form-label"
                        GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                <TextField fx:id="tfSiegeSocial"
+                <TextField fx:id="tfAdresse"
                            GridPane.rowIndex="1" GridPane.columnIndex="1" />
 
-                <Label text="Gérant :" styleClass="form-label"
+                <Label text="Ville :" styleClass="form-label"
                        GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                <ListView fx:id="lvGerantFranchise" prefHeight="120"
-                          GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                <TextField fx:id="tfVille"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+                <Label text="Franchise :" styleClass="form-label"
+                       GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                <ListView fx:id="lvFranchise" prefHeight="120"
+                          GridPane.rowIndex="3" GridPane.columnIndex="1" />
             </GridPane>
         </VBox>
     </center>
@@ -107,16 +112,13 @@
             <padding>
                 <Insets top="15" bottom="20" />
             </padding>
-
             <!-- ajout du logo -->
             <ImageView fitHeight="50.0" fitWidth="52.0">
                 <image>
                     <Image url="@../images/cinema_logo.png" />
                 </image>
             </ImageView>
-
             <Button fx:id="bRetour" text="Retour" onAction="#bRetourClick" styleClass="action-button" />
-            <Button fx:id="bEffacer" text="Effacer" onAction="#bEffacerClick" styleClass="action-button" />
             <Button fx:id="bEnregistrer" text="Enregistrer" onAction="#bEnregistrerClick" styleClass="action-button" />
         </HBox>
     </bottom>

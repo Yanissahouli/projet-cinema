@@ -5,12 +5,14 @@ import java.util.ResourceBundle;
 
 import cinema.BO.Utilisateur;
 import cinema.DAO.UtilisateurDAO;
+import cinema.Session;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -37,14 +39,22 @@ public class ConnexionController implements Initializable {
         String truc = tfLogin.getText();
         String chose = tfMDP.getText();
 
-
-
         UtilisateurDAO userDAO = new UtilisateurDAO();
         // TODO
         Utilisateur user = userDAO.authenticate(truc, chose);
 
+        // CORRECTION : si user == null, afficher un message d'erreur
+        if (user == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de connexion");
+            alert.setHeaderText(null);
+            alert.setContentText("Identifiant ou mot de passe incorrect.");
+            alert.showAndWait();
+            return;
+        }
 
-
+        // Stockage de l'utilisateur connecté dans la Session pour les logs
+        Session.setUtilisateur(user);
 
         showAccueil(user.getNom() + " " + user.getPrenom());
     }
@@ -79,7 +89,6 @@ public class ConnexionController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML

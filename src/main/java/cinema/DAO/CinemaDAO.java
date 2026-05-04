@@ -3,17 +3,38 @@ package cinema.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import cinema.BO.Cinema;
+import cinema.BO.Utilisateur;
+import cinema.Session;
 
 public class CinemaDAO extends DAO<Cinema> {
+
+    /**
+     * Envoie le nom de l'utilisateur connecté à PostgreSQL
+     * pour que les triggers puissent le récupérer via current_setting('myapp.utilisateur').
+     */
+    private void setUtilisateurSession() {
+        try {
+            Utilisateur u = Session.getUtilisateur();
+            String nom = (u != null) ? u.getNom() + " " + u.getPrenom() : "inconnu";
+            Statement st = this.connect.createStatement();
+            st.execute("SET myapp.utilisateur = '" + nom + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public boolean create(Cinema obj) {
         boolean result = false;
         try {
+            // Envoi du nom utilisateur pour le log
+            setUtilisateurSession();
+
             String query = "INSERT INTO cinema (denomination, adresse, ville, id_franchise) VALUES (?,?,?,?);";
             PreparedStatement preparedStatement = this.connect.prepareStatement(query);
             preparedStatement.setString(1, obj.getDenomination());
@@ -33,23 +54,28 @@ public class CinemaDAO extends DAO<Cinema> {
     @Override
     public boolean delete(Cinema obj) {
         boolean result = false;
-        String query = "DELETE FROM cinema WHERE id_cinema = ?;";
+        try {
+            // Envoi du nom utilisateur pour le log
+            setUtilisateurSession();
 
-        try (PreparedStatement preparedStatement = this.connect.prepareStatement(query)) {
+            String query = "DELETE FROM cinema WHERE id_cinema = ?;";
+            PreparedStatement preparedStatement = this.connect.prepareStatement(query);
             preparedStatement.setInt(1, obj.getIdCinema());
             result = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return result;
     }
 
     @Override
     public boolean update(Cinema obj) {
         boolean result = false;
-        String query = "UPDATE cinema SET denomination = ?, adresse = ?, ville = ?, id_franchise = ? WHERE id_cinema = ?;";
         try {
+            // Envoi du nom utilisateur pour le log
+            setUtilisateurSession();
+
+            String query = "UPDATE cinema SET denomination = ?, adresse = ?, ville = ?, id_franchise = ? WHERE id_cinema = ?;";
             PreparedStatement preparedStatement = this.connect.prepareStatement(query);
             preparedStatement.setString(1, obj.getDenomination());
             preparedStatement.setString(2, obj.getAdresse());
@@ -94,7 +120,7 @@ public class CinemaDAO extends DAO<Cinema> {
         String query = "SELECT * FROM cinema;";
 
         try (PreparedStatement preparedStatement = this.connect.prepareStatement(query);
-                ResultSet resultSet = preparedStatement.executeQuery()) {
+             ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
                 Cinema cinema = new Cinema(
