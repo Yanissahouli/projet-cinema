@@ -46,6 +46,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     // BDD
     implementation("org.postgresql:postgresql:42.7.4")
+    implementation("at.favre.lib:bcrypt:0.10.2")
 }
 
 

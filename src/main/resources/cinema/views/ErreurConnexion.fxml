@@ -15,8 +15,6 @@
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="cinema.controllers.ErrorController">
 
-   
-    <!-- Contenu principal -->
     <VBox alignment="CENTER" prefWidth="419.0" spacing="30.0">
         <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -31,7 +29,6 @@
         </Text>
 
       
-        <!-- Bouton OK -->
         <Button fx:id="ButtonOk"
                 onAction="#ButtonOkOnAction"
                 prefHeight="35.0"

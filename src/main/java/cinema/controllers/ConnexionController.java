@@ -43,7 +43,7 @@ public class ConnexionController implements Initializable {
         // TODO
         Utilisateur user = userDAO.authenticate(truc, chose);
 
-        // CORRECTION : si user == null, afficher un message d'erreur
+        // message d'erreur lors de la connexion
         if (user == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur de connexion");
@@ -79,7 +79,7 @@ public class ConnexionController implements Initializable {
             Stage stage = new Stage();
             stage.setTitle("Accueil Gestion de franchises");
             stage.setScene(new Scene(root));
-            stage.getIcons().add(new Image("/cinema/images/cinema_32x32.png"));
+            stage.getIcons().add(new Image("/cinema/images/cinema_16x16.png"));
             // Configurer la fenêtre en tant que modal
             stage.initModality(Modality.APPLICATION_MODAL);
 
@@ -121,5 +121,7 @@ public class ConnexionController implements Initializable {
             e.printStackTrace();
         }
     }
+
+
 
 }

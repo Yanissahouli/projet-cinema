@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -17,6 +18,17 @@ public class MenuController {
             bListeSalle, bAjouterSalle;
 
     protected String nameUti;
+
+    /**
+     * Ajoute les icônes CineForAll sur un stage (plusieurs tailles pour Windows)
+     */
+    private void setIcons(Stage stage) {
+        stage.getIcons().addAll(
+                new Image("/cinema/images/cinema_16x16.png"),
+                new Image("/cinema/images/cinema_32x32.png"),
+                new Image("/cinema/images/cinema_48x48.png")
+        );
+    }
 
     @FXML
     public void bQuitterClick(ActionEvent event) {
@@ -40,6 +52,7 @@ public class MenuController {
             Stage stage = new Stage();
             stage.setTitle("Accueil");
             stage.setScene(new Scene(root));
+            setIcons(stage);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
 
@@ -63,6 +76,7 @@ public class MenuController {
             Stage stage = new Stage();
             stage.setTitle("Liste franchises");
             stage.setScene(new Scene(root));
+            setIcons(stage);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
 
@@ -86,6 +100,7 @@ public class MenuController {
             Stage stage = new Stage();
             stage.setTitle("Ajouter une franchise");
             stage.setScene(new Scene(root));
+            setIcons(stage);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
 
@@ -109,6 +124,7 @@ public class MenuController {
             Stage stage = new Stage();
             stage.setTitle("Liste cinémas");
             stage.setScene(new Scene(root));
+            setIcons(stage);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
 
@@ -133,6 +149,7 @@ public class MenuController {
             Stage stage = new Stage();
             stage.setTitle("Ajouter un cinéma");
             stage.setScene(new Scene(root));
+            setIcons(stage);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
 
@@ -157,6 +174,7 @@ public class MenuController {
             Stage stage = new Stage();
             stage.setTitle("Liste des salles");
             stage.setScene(new Scene(root));
+            setIcons(stage);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
 
@@ -174,13 +192,13 @@ public class MenuController {
                     getClass().getResource("/cinema/views/page_ajout_salle.fxml"));
             Parent root = fxmlLoader.load();
 
-            // CORRECTION : passage du nameUti au controller
             AjouterSalleController ajouterSalleController = fxmlLoader.getController();
             ajouterSalleController.setName(nameUti);
 
             Stage stage = new Stage();
             stage.setTitle("Ajouter une salle");
             stage.setScene(new Scene(root));
+            setIcons(stage);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
 

@@ -55,7 +55,7 @@ public class AjouterCinemaController extends MenuController implements Initializ
             accueilController.setName(nameUti);
             accueilController.setBienvenue();
 
-            // Créer une nouvelle fenêtre (Stage)
+            // Créer une nouvelle fenêtre
             Stage stage = new Stage();
             stage.setTitle("Accueil");
             stage.setScene(new Scene(root));

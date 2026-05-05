@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import cinema.BO.Utilisateur;
 
 public class UtilisateurDAO extends DAO<Utilisateur> {
@@ -115,13 +116,20 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
     public Utilisateur authenticate(String login, String password) {
         Utilisateur user = null;
         try {
-            String sql = "SELECT * FROM utilisateur WHERE login =? AND mdp=?";
+            // Récupération de l'utilisateur par login uniquement
+            String sql = "SELECT * FROM utilisateur WHERE login = ?";
             PreparedStatement ps = this.connect.prepareStatement(sql);
             ps.setString(1, login);
-            ps.setString(2, password);
             ResultSet result = ps.executeQuery();
             if (result.next()) {
                 user = hydrate(result);
+                // hashage des mdp
+                BCrypt.Result bcryptResult = BCrypt.verifyer()
+                        .verify(password.toCharArray(), user.getMdp());
+                if (!bcryptResult.verified) {
+                    // si mdp incorrect
+                    user = null;
+                }
             }
         } catch (SQLException e) {
             return null;
